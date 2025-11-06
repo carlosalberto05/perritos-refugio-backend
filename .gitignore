@@ -1,0 +1,51 @@
+#Dependencias de Node
+/node_modules
+#Archivos de compilación de TypeScript
+/dist
+#Archivos de entorno
+.env
+#Archivos de logs
+logs
+*.log
+npm-debug.log*º
+#Archivos del caché del SO
+.DS_Store
+
+#Base de datos
+/database.sqlite
+#*.sqlite
+#Archivos de cobertura de pruebas
+/coverage
+#Archivos temporales
+/tmp
+#Archivos de configuración del editor
+.vscode
+.idea
+#Archivos de paquetes
+*.tgz
+#Archivos de lock
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+#Archivos de build
+/build
+#Archivos de pruebas
+/test-results
+/test-coverage
+#Archivos de configuración de Docker
+docker-compose.override.yml
+#Archivos de configuración de CI/CD
+.github/workflows
+.gitlab-ci.yml
+.circleci/config.yml
+#Archivos de documentación generada
+/docs/generated
+#Archivos de caché de Babel
+.babelrc
+#Archivos de caché de ESLint
+.eslintcache
+#Archivos de caché de Jest
+/jest-cache
+#Archivos de caché de Webpack
+/.webpack-cache
+

@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    /* Opciones de Tipado y Lenguaje */
+    "target": "ES2022", /* Compila a una versión moderna de JS */
+    "module": "NodeNext", /* Módulos para Node.js con sintaxis moderna (import/export) */
+    "moduleResolution": "NodeNext", /* Estrategia de resolución para el 'type: module' */
+    "esModuleInterop": true, /* Permite importar módulos CommonJS como si fueran ES Modules */
+    "strict": true, /* Tipado estricto (¡Estándar Senior!) */
+    "skipLibCheck": true, /* Ignora la verificación de tipado en las librerías */
+    
+    /* Rutas y Salida */
+    "rootDir": "./src", /* Directorio raíz de los archivos fuente */
+    "outDir": "./dist", /* Directorio de compilación de JavaScript */
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["./src/*"] /* Alias de importación para accesos limpios */
+    }
+  },
+  "include": [
+    "src/**/*" /* Incluye todos los archivos dentro de src */
+  ]
+}
