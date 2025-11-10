@@ -1,0 +1,38 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+// perritos-refugio-backend/prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Dog {
+  // 1. Identificador único: Es el índice principal y se genera automáticamente.
+  id          Int      @id @default(autoincrement())
+
+  // 2. Información básica:
+  name        String
+  age         Int      // Edad en años, por ejemplo
+  breed       String?  // Raza (opcional, por si es mestizo)
+
+  // 3. Estado del Refugio: 
+  isAdopted   Boolean  @default(false) // Muestra si está disponible o no.
+  description String   @db.Text        // Texto largo para su biografía (usa db.Text para PostgreSQL)
+
+  // 4. Fechas para el tracking:
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // 5. Relación (Opcional, pero te lo dejo como ejemplo de buena práctica futura)
+  // adoptionForms AdoptionForm[] // Futura relación con solicitudes de adopción
+} 

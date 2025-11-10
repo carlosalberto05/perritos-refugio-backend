@@ -49,3 +49,5 @@ docker-compose.override.yml
 #Archivos de caché de Webpack
 /.webpack-cache
 
+
+/src/generated/prisma
