@@ -12,9 +12,10 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
+
 
 model Dog {
   // 1. Identificador único: Es el índice principal y se genera automáticamente.
@@ -27,7 +28,8 @@ model Dog {
 
   // 3. Estado del Refugio: 
   isAdopted   Boolean  @default(false) // Muestra si está disponible o no.
-  description String   @db.Text        // Texto largo para su biografía (usa db.Text para PostgreSQL)
+  description String   // Texto largo para su biografía
+
 
   // 4. Fechas para el tracking:
   createdAt   DateTime @default(now())
