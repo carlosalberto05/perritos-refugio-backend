@@ -10,6 +10,10 @@
 | **Lenguaje**      | TypeScript                    | Tipado estricto para calidad de código y detección temprana de errores.       |
 | **Base de Datos** | PostgreSQL                    | BD Relacional robusta, ideal para datos estructurados de refugios y perritos. |
 | **ORM**           | Prisma                        | ORM moderno que genera un cliente de base de datos tipado y seguro.           |
+| **Validación**    | Zod                           | Esquemas de validación de datos seguros y robustos.                           |
+| **Seguridad**     | Helmet + CORS                 | Protección de cabeceras HTTP y políticas de acceso cruzado.                   |
+| **Calidad**       | ESLint + Prettier + Husky     | Estándares de código automáticos y hooks de Git para calidad continua.        |
+| **Logs**          | Morgan                        | Registro detallado de peticiones para depuración eficiente.                   |
 | **Arquitectura**  | Patrón de Repositorio (Capas) | Separa la lógica de negocio del acceso a datos, mejorando la testabilidad.    |
 | **Pruebas**       | Jest + Supertest              | Jest para pruebas unitarias. Supertest para pruebas de integración de la API. |
 
