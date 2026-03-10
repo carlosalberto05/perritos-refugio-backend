@@ -4,8 +4,9 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
 
-import perritoRoutes from './api/routes/perrito.routes.js';
-import refugioRoutes from './api/routes/refugio.routes.js';
+import dogRoutes from './api/routes/dog.routes.js';
+import shelterRoutes from './api/routes/shelter.routes.js';
+import successStoryRoutes from './api/routes/success-story.routes.js';
 import { errorHandler } from './api/middlewares/error.handler.js';
 
 // Carga variables de entorno
@@ -30,8 +31,9 @@ app.get('/health', (req: Request, res: Response) => {
 });
 
 // Registrar rutas de dominios
-app.use('/api/perritos', perritoRoutes);
-app.use('/api/refugios', refugioRoutes);
+app.use('/api/dogs', dogRoutes);
+app.use('/api/shelters', shelterRoutes);
+app.use('/api/success-stories', successStoryRoutes);
 
 // --- Manejo de Errores ---
 // Importante: El error handler debe ir después de todas las rutas
@@ -41,6 +43,6 @@ app.use(errorHandler);
 app.listen(PORT, () => {
   console.log(`🚀 Servidor backend escuchando en http://localhost:${PORT}`);
   console.log(`📡 Health Check: http://localhost:${PORT}/health`);
-  console.log(`🐶 Perritos API: http://localhost:${PORT}/api/perritos`);
+  console.log(`🐶 Perritos API: http://localhost:${PORT}/api/dogs`);
   console.log('Ambiente:', process.env.NODE_ENV || 'development');
 });

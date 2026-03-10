@@ -1,122 +1,169 @@
-# 🐶 Huellitas - Backend API 🐾
+# 🐶 Guía Completa de Conexión Backend + Frontend (Huellitas) 🐾
 
-![Build Status](https://img.shields.io/badge/build-passing-brightgreen)
-![Version](https://img.shields.io/badge/version-1.0.0-blue)
-![License](https://img.shields.io/badge/license-MIT-green)
-![Node.js](https://img.shields.io/badge/Node.js-20-black)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)
-![Prisma](https://img.shields.io/badge/Prisma-6.0-blue)
+¡Hola! Es un gusto saludarte. Entiendo perfectamente por lo que estás pasando; aprender a conectar el backend con el frontend es uno de los pasos más emocionantes (y a veces frustrantes) en el desarrollo web. 
 
-> **El motor que impulsa la adopción de huellitas.**  
-> Este es el servicio core de la plataforma Huellitas, encargado de gestionar la lógica de negocio, la persistencia de datos y proveer una API REST segura para el frontend y la app móvil.
+Este README está diseñado para ser tu **mapa definitivo**. He analizado tu frontend y tu backend para darte los pasos exactos que necesitas para llevar tu aplicación a nivel profesional, usando **Prisma**, **Supabase**, **Render** y las mejores prácticas.
 
 ---
 
-## ✨ Características Principales
-
-- **🏗️ Arquitectura de Capas:** Código organizado mediante el patrón de **Repositorio/Servicio** para una máxima escalabilidad y testabilidad.
-- **🔐 Seguridad Integrada:** Implementación de **Helmet**, **CORS** y validación de datos con **Zod**.
-- **📊 Base de Datos Flexible:** Configurado con **Prisma ORM** y **SQLite** para un desarrollo local rápido y sencillo.
-- **🛠️ Calidad de Código:** Integración con **ESLint**, **Prettier** y **Husky** para mantener un estándar de código premium.
-- **🚀 API RESTful:** Endpoints estandarizados con respuestas consistentes y manejo global de errores.
-
----
-
-## 🛠️ Stack Tecnológico
-
-El backend está diseñado para ser ligero, rápido y fácil de mantener:
-
-| Categoría | Tecnología | Descripción |
-|-----------|------------|-------------|
-| **Framework** | ![Express](https://img.shields.io/badge/-Express-000000?logo=express&logoColor=white) | Servidor web minimalista y veloz. |
-| **Lenguaje** | ![TypeScript](https://img.shields.io/badge/-TypeScript-007ACC?logo=typescript&logoColor=white) | Tipado estricto para evitar errores en tiempo de ejecución. |
-| **ORM** | ![Prisma](https://img.shields.io/badge/-Prisma-2D3748?logo=prisma&logoColor=white) | Modelado de datos moderno y tipado. |
-| **Base de Datos** | ![SQLite](https://img.shields.io/badge/-SQLite-003B57?logo=sqlite&logoColor=white) | BD local embebida para simplicidad en desarrollo. |
-| **Validación** | ![Zod](https://img.shields.io/badge/-Zod-3E67B1?logo=zod&logoColor=white) | Validación de esquemas de datos segura. |
-| **Testing** | ![Jest](https://img.shields.io/badge/-Jest-C21325?logo=jest&logoColor=white) | Marco de pruebas robusto. |
+## 📋 Índice
+1. [El Concepto: ¿Cómo se comunican?](#1-el-concepto-cómo-se-comunican)
+2. [Paso 1: Configuración de la Base de Datos (Supabase)](#2-paso-1-configuración-de-la-base-de-datos-supabase)
+3. [Paso 2: Configuración de Prisma y SQLite (Local)](#3-paso-2-configuración-de-prisma-y-sqlite-local)
+4. [Paso 3: Lógica del Backend - Consumiendo la API](#4-paso-3-lógica-del-backend---consumiendo-la-api)
+5. [Paso 4: Conexión desde el Frontend (TanStack Query)](#5-paso-4-conexión-desde-el-frontend-tanstack-query)
+6. [Paso 5: Despliegue en Producción (Render + Supabase)](#6-paso-5-despliegue-en-producción-render--supabase)
+7. [Variables de Entorno (.env)](#7-variables-de-entorno-env)
+8. [Temas Críticos: CORS y Middlewares](#8-temas-críticos-cors-y-middlewares)
 
 ---
 
-## 🏗️ Arquitectura del Proyecto (Patrón de Capas)
+## 1. El Concepto: ¿Cómo se comunican?
+Actualmente, tu frontend usa un archivo `db.json` local. Cuando lo subes a Vercel, ese archivo es "estático" y no funciona como una base de datos real.
 
-Seguimos una estructura modular donde cada archivo tiene una responsabilidad única:
+**El nuevo flujo será:**
+1. El **Frontend** (React en Vercel) hace una petición `GET` a tu **Backend**.
+2. El **Backend** (Express en Render) recibe la petición.
+3. El **Backend** le pide a **Prisma** que busque los datos.
+4. **Prisma** consulta la **Base de Datos** (Postgres en Supabase o SQLite local).
+5. El dato regresa por el mismo camino hasta el frontend.
 
+---
+
+## 2. Paso 1: Configuración de la Base de Datos (Supabase)
+Para producción, necesitas una base de datos real (PostgreSQL). Supabase es excelente para esto.
+
+1. Ve a [Supabase](https://supabase.com/) y crea un proyecto.
+2. En la configuración del proyecto, busca **Database Settings**.
+3. Copia la **Connection String** (URI). Se ve algo así:  
+   `postgresql://postgres:[PASSWORD]@db.[ID].supabase.co:5432/postgres`
+4. **IMPORTANTE:** En Prisma, para Supabase, solemos usar el modo `transaction` o añadir `?pgbouncer=true` si es necesario, pero para empezar, la URI normal funciona bien.
+
+---
+
+## 3. Paso 2: Configuración de Prisma y SQLite (Local)
+Para trabajar en local sin gastar recursos ni internet, usamos **SQLite**. Es un archivo `.db` que vive en tu carpeta.
+
+### Instalación de Dependencias
+Asegúrate de tener esto en tu backend:
 ```bash
-src/
-├── 📂 api/                 # Capa de Interfaz (HTTP)
-│   ├── 📂 controllers/     # Orquestadores de peticiones
-│   ├── 📂 middlewares/     # Filtros (Auth, Error Handling, Logs)
-│   ├── 📂 routes/          # Definición de endpoints
-│   └── 📂 utils/           # Ayudantes (ApiResponse, etc.)
-│
-├── 📂 core/                # Capa de Dominio y Datos
-│   ├── 📂 services/        # Lógica de negocio (El "cerebro")
-│   └── 📂 repositories/    # Acceso a datos (Habla con Prisma)
-│
-├── 📂 types/               # Definiciones de tipos TS globales
-└── server.ts               # Punto de entrada de la aplicación
+npm install @prisma/client
+npm install -D prisma
+```
+
+### El Esquema (schema.prisma)
+Ya he actualizado tu archivo `prisma/schema.prisma`. Ahora tiene la estructura correcta para tus perritos y refugios.
+
+### Comandos Clave:
+Cada vez que cambies el esquema, corre:
+```bash
+# Genera el cliente de Prisma (el código que usas para consultar)
+npx prisma generate
+
+# Crea las tablas en tu base de datos local
+npx prisma migrate dev --name init
 ```
 
 ---
 
-## 🚀 Comenzando
+## 4. Paso 3: Lógica del Backend - Consumiendo la API
+He organizado tu código en **Controladores**, **Servicios** y **Repositorios**. Esta es la "Arquitectura Profesional".
 
-Sigue estos pasos para levantar tu servidor local en minutos.
+- **Repositorio:** Habla directamente con Prisma.
+- **Servicio:** Contiene la lógica (reglas de negocio).
+- **Controlador:** Recibe la petición HTTP y responde.
 
-### Prerrequisitos
-*   Node.js (v20 o superior)
-*   npm
-
-### Instalación
-
-1.  **Clonar el repositorio:**
-    ```bash
-    git clone https://github.com/carlosalberto05/perritos-refugio-backend.git
-    cd perritos-refugio-backend
-    ```
-
-2.  **Instalar dependencias:**
-    ```bash
-    npm install
-    ```
-
-3.  **Configurar variables de entorno:**
-    Crea un archivo `.env` en la raíz (basado en `.env.example`):
-    ```env
-    PORT=3001
-    DATABASE_URL="file:./dev.db"
-    ```
-
-4.  **Preparar la base de datos (SQLite):**
-    ```bash
-    npm run prisma:generate
-    npm run prisma:migrate
-    ```
-
-5.  **Iniciar el servidor:**
-    ```bash
-    npm run dev
-    ```
-
-¡Listo! La API estará disponible en [http://localhost:3001](http://localhost:3001). Puedes probar el estado en `/health`.
-
----
-
-## 🧪 Pruebas y Calidad
-
-Contamos con herramientas automáticas para asegurar que el código siempre brille:
-
-```bash
-# Ejecutar Linter
-npm run lint
-
-# Formatear código
-npm run format
-
-# Ejecutar Tests
-npm run test
+### Ejemplo de Endpoint para obtener perritos:
+`GET /api/perritos` devuelve:
+```json
+{
+  "success": true,
+  "message": "Perritos recuperados exitosamente",
+  "data": [
+    { "id": "uuid", "name": "Luna", "breed": "Mestizo", ... }
+  ]
+}
 ```
 
 ---
 
-Hecho con ❤️ por **Carlos Alberto Lira** 🐾.
+## 5. Paso 4: Conexión desde el Frontend (TanStack Query)
+En tu frontend, ya usas TanStack Query. Aquí te muestro cómo conectar el API real.
+
+### Crear un servicio de API
+Crea un archivo `src/services/api.ts`:
+```typescript
+import axios from 'axios';
+
+const api = axios.create({
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3001/api',
+});
+
+export default api;
+```
+
+### Usar el Hook en tu Componente
+En tu página de Home o donde muestres los perritos:
+```typescript
+import { useQuery } from '@tanstack/react-query';
+import api from '../services/api';
+
+export const useDogs = () => {
+  return useQuery({
+    queryKey: ['dogs'],
+    queryFn: async () => {
+      const { data } = await api.get('/perritos');
+      return data.data; // Accedemos a .data porque el backend lo envuelve así
+    },
+  });
+};
+```
+
+---
+
+## 6. Paso 5: Despliegue en Producción (Render + Supabase)
+1. **Render:** Crea un nuevo "Web Service".
+2. Conecta tu repo de GitHub.
+3. **Build Command:** `npm install && npm run build && npx prisma generate`
+4. **Start Command:** `npm start`
+5. **Variables de Entorno:** Aquí es donde ocurre la magia.
+
+---
+
+## 7. Variables de Entorno (.env)
+Las variables de entorno permiten que la misma app use una base de datos en local y otra en producción **sin cambiar el código**.
+
+### En Local (`.env` del backend):
+```env
+PORT=3001
+DATABASE_URL="file:./dev.db"
+NODE_ENV=development
+```
+
+### En Render (Configuración manual en el dashboard):
+```env
+PORT=10000
+DATABASE_URL="postgresql://user:pass@supabase-url.com:5432/postgres"
+NODE_ENV=production
+```
+
+### En Vercel (`.env` del frontend):
+```env
+VITE_API_URL="https://tu-api-en-render.onrender.com/api"
+```
+
+---
+
+## 8. Temas Críticos: CORS y Middlewares
+- **CORS:** Ya lo configuré en tu `server.ts`. Es lo que permite que el puerto 5173 (frontend) hable con el 3001 (backend). En producción, deberías especificar tu dominio de Vercel por seguridad.
+- **Zod:** Lo usamos para validar que la información que llega al backend sea correcta.
+- **Helmet:** Agrega capas de seguridad a tus headers HTTP.
+
+---
+
+## 🚀 ¿Qué sigue?
+1. **Poblar la base de datos:** He dejado la estructura lista. Puedes usar el comando `npx prisma studio` para ver tu base de datos local y agregar perritos manualmente para probar.
+2. **Conectar el frontend:** Sigue el ejemplo del Paso 4.
+3. **Desplegar:** ¡Sube tus cambios y configura las variables en Render!
+
+Si tienes dudas, ¡estoy aquí para ayudarte a que este proyecto sea el mejor de tu portfolio! 🐶✨

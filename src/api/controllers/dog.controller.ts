@@ -1,29 +1,29 @@
 import { Request, Response, NextFunction } from 'express';
-import { PerritoService } from '../../core/services/perrito.service.js';
+import { DogService } from '../../core/services/dog.service.js';
 import { ApiResponse } from '../utils/api-response.js';
 
-const perritoService = new PerritoService();
+const dogService = new DogService();
 
-export const getPerritos = async (
+export const getDogs = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const data = await perritoService.getAllPerritos();
+    const data = await dogService.getAllDogs();
     res.json(ApiResponse.success(data, 'Perritos recuperados exitosamente'));
   } catch (error) {
     next(error);
   }
 };
 
-export const createPerrito = async (
+export const createDog = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const data = await perritoService.registerPerrito(req.body);
+    const data = await dogService.registerDog(req.body);
     res
       .status(201)
       .json(ApiResponse.success(data, 'Perrito registrado exitosamente'));

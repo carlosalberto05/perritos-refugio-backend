@@ -7,14 +7,18 @@
     "esModuleInterop": true /* Permite importar módulos CommonJS como si fueran ES Modules */,
     "strict": true /* Tipado estricto (¡Estándar Senior!) */,
     "skipLibCheck": true /* Ignora la verificación de tipado en las librerías */,
-
     /* Rutas y Salida */
-    "rootDir": "./src" /* Directorio raíz de los archivos fuente */,
+    "rootDir": "./" /* Directorio raíz de los archivos fuente */,
     "outDir": "./dist" /* Directorio de compilación de JavaScript */,
     "baseUrl": "./",
     "paths": {
-      "@/*": ["./src/*"] /* Alias de importación para accesos limpios */
+      "@/*": [
+        "./src/*"
+      ] /* Alias de importación para accesos limpios */
     }
   },
-  "include": ["src/**/*" /* Incluye todos los archivos dentro de src */]
+  "include": [
+    "src/**/*",
+    "prisma/**/*"
+  ]
 }

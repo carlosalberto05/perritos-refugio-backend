@@ -12,8 +12,11 @@ npm-debug.log*º
 .DS_Store
 
 #Base de datos
-/database.sqlite
-#*.sqlite
+*.db
+prisma/dev.db
+
+#Archivos de lock
+# package-lock.json (Comentado para que se incluya)
 #Archivos de cobertura de pruebas
 /coverage
 #Archivos temporales
@@ -21,7 +24,6 @@ npm-debug.log*º
 #Archivos de configuración del editor
 .vscode
 .idea
-#Archivos de paquetes
 *.tgz
 #Archivos de lock
 package-lock.json

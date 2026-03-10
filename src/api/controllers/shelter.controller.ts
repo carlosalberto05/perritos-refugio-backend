@@ -1,16 +1,16 @@
 import { Request, Response, NextFunction } from 'express';
-import { RefugioService } from '../../core/services/refugio.service.js';
+import { ShelterService } from '../../core/services/shelter.service.js';
 import { ApiResponse } from '../utils/api-response.js';
 
-const refugioService = new RefugioService();
+const shelterService = new ShelterService();
 
-export const getRefugios = async (
+export const getShelters = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const data = await refugioService.getAllRefugios();
+    const data = await shelterService.getAllShelters();
     res.json(ApiResponse.success(data, 'Refugios recuperados exitosamente'));
   } catch (error) {
     next(error);
