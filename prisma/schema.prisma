@@ -1,0 +1,60 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+// perritos-refugio-backend/prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Shelter {
+  id             String         @id
+  name           String
+  logo           String
+  image          String
+  rescuedCount   Int
+  location       String
+  state          String
+  description    String
+  mission        String
+  contactEmail   String
+  contactPhone   String
+  urgentNeeds    String?
+  dogs           Dog[]
+  successStories SuccessStory[]
+}
+
+model Dog {
+  id             String  @id @default(uuid())
+  name           String
+  age            String
+  size           String
+  breed          String
+  adoptionStatus String  // "En adopción" | "Adoptado" | "Reservado"
+  image          String
+  description    String
+  color          String?
+  distance       Float?
+  shelterId      String?
+  shelter        Shelter? @relation(fields: [shelterId], references: [id])
+}
+
+model SuccessStory {
+  id         String   @id @default(uuid())
+  dogName    String
+  ownerName  String
+  story      String
+  image      String
+  date       String
+  shelterId  String?
+  shelter    Shelter? @relation(fields: [shelterId], references: [id])
+}
