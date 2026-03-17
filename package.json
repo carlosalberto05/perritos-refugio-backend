@@ -9,7 +9,7 @@
     "start:prod": "npx prisma migrate deploy && node dist/server.js",
     "dev": "tsx watch src/server.ts",
     "build": "tsc",
-    "build:render": "npm install && npx prisma generate && npm run build",
+    "build:render": "npm install --include=dev && npx prisma generate && npm run build",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
