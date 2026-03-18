@@ -5,8 +5,8 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "node dist/server.js",
-    "start:prod": "npx prisma migrate deploy && node dist/server.js",
+    "start": "node dist/src/server.js",
+    "start:prod": "npx prisma migrate deploy && node dist/src/server.js",
     "dev": "tsx watch src/server.ts",
     "build": "tsc",
     "build:render": "npm install --include=dev && npx prisma generate && npm run build",
