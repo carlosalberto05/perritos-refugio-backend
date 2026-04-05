@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client';
 import prisma from '../../db/prisma.js';
 
 export class DogRepository {
@@ -18,7 +19,7 @@ export class DogRepository {
     });
   }
 
-  async create(data: any) {
+  async create(data: Prisma.DogCreateInput) {
     return prisma.dog.create({
       data,
     });
