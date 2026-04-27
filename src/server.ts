@@ -40,9 +40,40 @@ app.use('/api/success-stories', successStoryRoutes);
 app.use(errorHandler);
 
 // --- Arranque ---
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`🚀 Servidor backend escuchando en http://localhost:${PORT}`);
   console.log(`📡 Health Check: http://localhost:${PORT}/health`);
   console.log(`🐶 Perritos API: http://localhost:${PORT}/api/dogs`);
   console.log('Ambiente:', process.env.NODE_ENV || 'development');
 });
+
+// --- Graceful Shutdown (Cierre Ordenado) ---
+// Manejo de señales para cerrar el servidor de forma segura
+const shutdown = async (signal: string) => {
+  console.log(
+    `\n🛑 Recibido ${signal}. Cerrando servidor de forma ordenada...`
+  );
+
+  server.close(async () => {
+    console.log('🚪 Conexiones HTTP cerradas.');
+
+    try {
+      const { default: prisma } = await import('./db/prisma.js');
+      await prisma.$disconnect();
+      console.log('📦 Conexión con la base de datos cerrada.');
+      process.exit(0);
+    } catch (error) {
+      console.error('❌ Error al cerrar la base de datos:', error);
+      process.exit(1);
+    }
+  });
+
+  // Si el cierre tarda demasiado, forzar salida después de 10 segundos
+  setTimeout(() => {
+    console.error('⚠️ Forzando cierre del servidor tras 10s de espera.');
+    process.exit(1);
+  }, 10000);
+};
+
+process.on('SIGTERM', () => shutdown('SIGTERM'));
+process.on('SIGINT', () => shutdown('SIGINT'));

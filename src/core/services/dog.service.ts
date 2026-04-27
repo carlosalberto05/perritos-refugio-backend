@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client';
 import { DogRepository } from '../repositories/dog.repository.js';
 
 export class DogService {
@@ -15,7 +16,7 @@ export class DogService {
     return this.repository.findById(id);
   }
 
-  async registerDog(data: any) {
+  async registerDog(data: Prisma.DogCreateInput) {
     // Aquí puedes agregar validaciones de negocio antes de guardar
     return this.repository.create(data);
   }
