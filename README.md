@@ -1,169 +1,109 @@
-# 🐶 Guía Completa de Conexión Backend + Frontend (Huellitas) 🐾
+# 🐾 Perritos Refugio - Backend API
 
-¡Hola! Es un gusto saludarte. Entiendo perfectamente por lo que estás pasando; aprender a conectar el backend con el frontend es uno de los pasos más emocionantes (y a veces frustrantes) en el desarrollo web. 
+[![CI Pipeline](https://github.com/carlosalberto05/perritos-refugio-backend/actions/workflows/ci.yml/badge.svg)](https://github.com/carlosalberto05/perritos-refugio-backend/actions/workflows/ci.yml)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue.svg)](https://www.typescriptlang.org/)
+[![Node.js](https://img.shields.io/badge/Node.js-20.x-green.svg)](https://nodejs.org/)
+[![Prisma](https://img.shields.io/badge/Prisma-ORM-1B222D.svg)](https://www.prisma.io/)
 
-Este README está diseñado para ser tu **mapa definitivo**. He analizado tu frontend y tu backend para darte los pasos exactos que necesitas para llevar tu aplicación a nivel profesional, usando **Prisma**, **Supabase**, **Render** y las mejores prácticas.
-
----
-
-## 📋 Índice
-1. [El Concepto: ¿Cómo se comunican?](#1-el-concepto-cómo-se-comunican)
-2. [Paso 1: Configuración de la Base de Datos (Supabase)](#2-paso-1-configuración-de-la-base-de-datos-supabase)
-3. [Paso 2: Configuración de Prisma y SQLite (Local)](#3-paso-2-configuración-de-prisma-y-sqlite-local)
-4. [Paso 3: Lógica del Backend - Consumiendo la API](#4-paso-3-lógica-del-backend---consumiendo-la-api)
-5. [Paso 4: Conexión desde el Frontend (TanStack Query)](#5-paso-4-conexión-desde-el-frontend-tanstack-query)
-6. [Paso 5: Despliegue en Producción (Render + Supabase)](#6-paso-5-despliegue-en-producción-render--supabase)
-7. [Variables de Entorno (.env)](#7-variables-de-entorno-env)
-8. [Temas Críticos: CORS y Middlewares](#8-temas-críticos-cors-y-middlewares)
+Este repositorio alberga el backend (API RESTful) para el sistema de administración y adopción de la plataforma **Perritos Refugio**, un refugio de perritos rescatados de la calle en México.
 
 ---
 
-## 1. El Concepto: ¿Cómo se comunican?
-Actualmente, tu frontend usa un archivo `db.json` local. Cuando lo subes a Vercel, ese archivo es "estático" y no funciona como una base de datos real.
+## 🏗️ Arquitectura y Tecnologías
 
-**El nuevo flujo será:**
-1. El **Frontend** (React en Vercel) hace una petición `GET` a tu **Backend**.
-2. El **Backend** (Express en Render) recibe la petición.
-3. El **Backend** le pide a **Prisma** que busque los datos.
-4. **Prisma** consulta la **Base de Datos** (Postgres en Supabase o SQLite local).
-5. El dato regresa por el mismo camino hasta el frontend.
+El sistema está construido siguiendo buenas prácticas de desarrollo moderno, implementando una arquitectura de capas (Controladores, Servicios y Repositorios).
 
----
-
-## 2. Paso 1: Configuración de la Base de Datos (Supabase)
-Para producción, necesitas una base de datos real (PostgreSQL). Supabase es excelente para esto.
-
-1. Ve a [Supabase](https://supabase.com/) y crea un proyecto.
-2. En la configuración del proyecto, busca **Database Settings**.
-3. Copia la **Connection String** (URI). Se ve algo así:  
-   `postgresql://postgres:[PASSWORD]@db.[ID].supabase.co:5432/postgres`
-4. **IMPORTANTE:** En Prisma, para Supabase, solemos usar el modo `transaction` o añadir `?pgbouncer=true` si es necesario, pero para empezar, la URI normal funciona bien.
+*   **Runtime & Framework:** Node.js, Express.js.
+*   **Lenguaje core:** TypeScript.
+*   **Bases de Datos:** PostgreSQL (Producción en Supabase) y SQLite (Desarrollo).
+*   **ORM:** Prisma.
+*   **Validación de Datos:** Zod.
+*   **Testing:** Jest & Supertest.
+*   **Seguridad:** Helmet & CORS.
+*   **Calidad de Código y CI/CD:** ESLint, Prettier, Husky, Commitlint y GitHub Actions.
 
 ---
 
-## 3. Paso 2: Configuración de Prisma y SQLite (Local)
-Para trabajar en local sin gastar recursos ni internet, usamos **SQLite**. Es un archivo `.db` que vive en tu carpeta.
+## 🚀 Guía de Inicialización (Local)
 
-### Instalación de Dependencias
-Asegúrate de tener esto en tu backend:
+### 1. Requisitos Previos
+* Node.js v20+
+* Gestor de paquetes npm (v10 o superior recomendado)
+
+### 2. Instalación
+
+Clona el repositorio e instala las dependencias:
+
 ```bash
-npm install @prisma/client
-npm install -D prisma
+git clone https://github.com/carlosalberto05/perritos-refugio-backend.git
+cd perritos-refugio-backend
+npm ci
 ```
 
-### El Esquema (schema.prisma)
-Ya he actualizado tu archivo `prisma/schema.prisma`. Ahora tiene la estructura correcta para tus perritos y refugios.
+### 3. Variables de Entorno
 
-### Comandos Clave:
-Cada vez que cambies el esquema, corre:
+Duplica el archivo de ejemplo para configurar el entorno local:
+
 ```bash
-# Genera el cliente de Prisma (el código que usas para consultar)
-npx prisma generate
-
-# Crea las tablas en tu base de datos local
-npx prisma migrate dev --name init
+cp .env.example .env.local
 ```
+
+Asegúrate de que tus variables apunten al entorno SQLite local si deseas evitar una instancia en nube durante el desarrollo (revisa `.env.local` y los comentarios).
+
+### 4. Base de Datos (Prisma)
+
+Sincroniza el esquema de prisma en la base de datos de desarrollo y genera el SDK del cliente:
+
+```bash
+# Migrar la base de datos (crear tablas)
+npm run prisma:migrate
+
+# Ejecutar el seed (Poblar la base de datos con datos de prueba)
+npm run prisma:seed
+```
+
+### 5. Iniciar el Servidor
+
+```bash
+# Modo desarrollo con recarga automática
+npm run dev
+
+# Compilar para producción y correr localmente
+npm run build
+npm start
+```
+La API estará disponible en `http://localhost:3001` (o el puerto definido en tus variables de entorno).
 
 ---
 
-## 4. Paso 3: Lógica del Backend - Consumiendo la API
-He organizado tu código en **Controladores**, **Servicios** y **Repositorios**. Esta es la "Arquitectura Profesional".
+## 🌍 Entornos y Despliegue
 
-- **Repositorio:** Habla directamente con Prisma.
-- **Servicio:** Contiene la lógica (reglas de negocio).
-- **Controlador:** Recibe la petición HTTP y responde.
+### Producción (Render + Supabase)
 
-### Ejemplo de Endpoint para obtener perritos:
-`GET /api/perritos` devuelve:
-```json
-{
-  "success": true,
-  "message": "Perritos recuperados exitosamente",
-  "data": [
-    { "id": "uuid", "name": "Luna", "breed": "Mestizo", ... }
-  ]
-}
-```
+El backend está configurado para ser desplegado eficientemente en [Render](https://render.com) junto a una base de datos PostgreSQL en [Supabase](https://supabase.com).
+
+**Comandos relevantes para CI/CD y despliegue:**
+*   **Build de Producción:** `npm run build:render`
+*   **Start Command:** `npm run start:prod` (Este comando incluye la ejecución automática de la migración en Prisma y luego inicializa el servidor compilado).
 
 ---
 
-## 5. Paso 4: Conexión desde el Frontend (TanStack Query)
-En tu frontend, ya usas TanStack Query. Aquí te muestro cómo conectar el API real.
+## 🛠️ Entorno de Trabajo y Estándares
 
-### Crear un servicio de API
-Crea un archivo `src/services/api.ts`:
-```typescript
-import axios from 'axios';
+### CI/CD
+Contamos con un pipeline en **GitHub Actions** (`ci.yml`) que garantiza el correcto funcionamiento en las ramas `main` y `develop`. El flujo valida linter, construcción y pruebas unitarias por cada Pull Request.
 
-const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3001/api',
-});
+### Ganchos (Git Hooks) & Commits
+Usamos **Husky** y **Commitlint** para asegurar que los mensajes de nuestros commits sigan la convención [Conventional Commits](https://www.conventionalcommits.org/).
 
-export default api;
-```
+### Contribución y Reporte de Fallos
+Toda información acerca de los requerimientos de estructura en el código, el uso de las ramas (principal y características) y la generación de Pull Requests está concentrado en nuestra guía unificada.
 
-### Usar el Hook en tu Componente
-En tu página de Home o donde muestres los perritos:
-```typescript
-import { useQuery } from '@tanstack/react-query';
-import api from '../services/api';
+👉 **Por favor, antes de crear un PR, revisa y sigue las instrucciones en nuestro documento [CONTRIBUTING.md](./CONTRIBUTING.md)**.
 
-export const useDogs = () => {
-  return useQuery({
-    queryKey: ['dogs'],
-    queryFn: async () => {
-      const { data } = await api.get('/perritos');
-      return data.data; // Accedemos a .data porque el backend lo envuelve así
-    },
-  });
-};
-```
+A la hora de enviar un Pull Request en GitHub, se cargará automáticamente la plantilla predeterminada ubicada en `.github/pull_request_template.md`. Sigue el checklist al interior.
 
 ---
 
-## 6. Paso 5: Despliegue en Producción (Render + Supabase)
-1. **Render:** Crea un nuevo "Web Service".
-2. Conecta tu repo de GitHub.
-3. **Build Command:** `npm install && npm run build && npx prisma generate`
-4. **Start Command:** `npm start`
-5. **Variables de Entorno:** Aquí es donde ocurre la magia.
-
----
-
-## 7. Variables de Entorno (.env)
-Las variables de entorno permiten que la misma app use una base de datos en local y otra en producción **sin cambiar el código**.
-
-### En Local (`.env` del backend):
-```env
-PORT=3001
-DATABASE_URL="file:./dev.db"
-NODE_ENV=development
-```
-
-### En Render (Configuración manual en el dashboard):
-```env
-PORT=10000
-DATABASE_URL="postgresql://user:pass@supabase-url.com:5432/postgres"
-NODE_ENV=production
-```
-
-### En Vercel (`.env` del frontend):
-```env
-VITE_API_URL="https://tu-api-en-render.onrender.com/api"
-```
-
----
-
-## 8. Temas Críticos: CORS y Middlewares
-- **CORS:** Ya lo configuré en tu `server.ts`. Es lo que permite que el puerto 5173 (frontend) hable con el 3001 (backend). En producción, deberías especificar tu dominio de Vercel por seguridad.
-- **Zod:** Lo usamos para validar que la información que llega al backend sea correcta.
-- **Helmet:** Agrega capas de seguridad a tus headers HTTP.
-
----
-
-## 🚀 ¿Qué sigue?
-1. **Poblar la base de datos:** He dejado la estructura lista. Puedes usar el comando `npx prisma studio` para ver tu base de datos local y agregar perritos manualmente para probar.
-2. **Conectar el frontend:** Sigue el ejemplo del Paso 4.
-3. **Desplegar:** ¡Sube tus cambios y configura las variables en Render!
-
-Si tienes dudas, ¡estoy aquí para ayudarte a que este proyecto sea el mejor de tu portfolio! 🐶✨
+## 📞 Soporte e Issues
+Para problemas, fallos del sistema o nuevas peticiones, favor de generar un nuevo [Issue](../../issues) en GitHub describiendo adecuadamente el caso y adjuntando registros técnicos de ser posible. Revisa los [CODEOWNERS](./.github/CODEOWNERS) en caso de necesitar revisiones específicas de algún módulo.
