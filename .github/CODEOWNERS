@@ -1,0 +1,12 @@
+# Propietarios predeterminados
+* @carlosalberto05
+
+# Autenticación
+/src/auth @carlosalberto05
+
+# Base de datos
+/prisma @carlosalberto05
+/src/database @carlosalberto05
+
+# Documentación
+*.md @carlosalberto05
