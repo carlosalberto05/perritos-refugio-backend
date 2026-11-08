@@ -27,8 +27,9 @@ El sistema está construido siguiendo buenas prácticas de desarrollo moderno, i
 ## 🚀 Guía de Inicialización (Local)
 
 ### 1. Requisitos Previos
-* Node.js v20+
+* Node.js 22.23.4+ (o 24.22.1+) — versión con el fix de seguridad de Brotli
 * Gestor de paquetes npm (v10 o superior recomendado)
+* Docker Desktop (para PostgreSQL local)
 
 ### 2. Instalación
 
@@ -45,22 +46,42 @@ npm ci --legacy-peer-deps
 Duplica el archivo de ejemplo para configurar el entorno local:
 
 ```bash
-cp .env.example .env.local
+cp .env.example .env
 ```
 
-Asegúrate de que tus variables apunten al entorno SQLite local si deseas evitar una instancia en nube durante el desarrollo (revisa `.env.local` y los comentarios).
+El backend usa PostgreSQL tanto en local como en producción. En local, `DATABASE_URL` y `DIRECT_URL` apuntan a:
 
-### 4. Base de Datos (Prisma)
+```env
+postgresql://postgres:postgres@localhost:5432/huellitas?schema=public
+```
 
-Sincroniza el esquema de prisma en la base de datos de desarrollo y genera el SDK del cliente:
+### 4. Base de Datos (PostgreSQL con Docker)
+
+Levanta PostgreSQL 16 en local:
 
 ```bash
-# Migrar la base de datos (crear tablas)
-npm run prisma:migrate
+docker compose up -d
+```
 
-# Ejecutar el seed (Poblar la base de datos con datos de prueba)
+Esto expone PostgreSQL en `localhost:5432` con usuario `postgres`, contraseña `postgres` y base `huellitas`. Los datos persisten en el volumen `huellitas_pgdata`.
+
+Luego aplica las migraciones y carga los datos de prueba:
+
+```bash
+npx prisma migrate deploy
 npm run prisma:seed
 ```
+
+Comandos útiles:
+
+```bash
+npm run db:up      # Levantar PostgreSQL
+npm run db:down    # Detener PostgreSQL
+npm run db:logs    # Ver logs de PostgreSQL
+npm run db:reset   # Borrar datos, recrear y volver a sembrar
+```
+
+Si el puerto `5432` está ocupado, cambia el mapeo en `docker-compose.yml` y actualiza `DATABASE_URL`/`DIRECT_URL` en `.env`.
 
 ### 5. Iniciar el Servidor
 
