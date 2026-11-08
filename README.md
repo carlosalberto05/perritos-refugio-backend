@@ -37,7 +37,7 @@ Clona el repositorio e instala las dependencias:
 ```bash
 git clone https://github.com/carlosalberto05/perritos-refugio-backend.git
 cd perritos-refugio-backend
-npm ci
+npm ci --legacy-peer-deps
 ```
 
 ### 3. Variables de Entorno
