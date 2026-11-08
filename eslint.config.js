@@ -5,7 +5,12 @@ import prettierPlugin from 'eslint-plugin-prettier';
 
 export default [
   {
-    ignores: ['dist/**', 'node_modules/**', 'prisma/generated/**'],
+    ignores: [
+      'dist/**',
+      'node_modules/**',
+      'prisma/generated/**',
+      'src/generated/**',
+    ],
   },
   {
     files: ['src/**/*.ts'],
