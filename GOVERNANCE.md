@@ -60,30 +60,35 @@ Este documento establece las reglas de contribución, revisión y despliegue par
 ## 2. Flujo de Contribución (Git Flow)
 
 ```
-main (producción)
+main (producción - SOLO para releases)
   ↑
-  ├─ Releases (PR con 2 aprobaciones)
+  └─ merge desde develop (nunca directamente)
   │
-develop (staging)
-  ↑
-  ├─ feature/new-auth (PR con 1 aprobación)
-  ├─ bugfix/email-validation
-  └─ refactor/database-queries
+develop (staging - RAMA PRINCIPAL DE TRABAJO) ←──────────────
+  ↑                                                   │
+  ├─ feature/new-auth (PR → develop) ←───────────────┤
+  ├─ bugfix/email-validation (PR → develop) ←───────┤
+  └─ refactor/database-queries (PR → develop) ←─────┘
 ```
+
+### ⚠️ REGLA CRÍTICA: Todo apunta a `develop`
+
+> **NUNCA** hacer push directo a `main` o `develop`. Todo cambio viene de una rama separada y se mergea a `develop` vía Pull Request.
 
 ### Pasos para contribuir:
 
-1. Sincroniza tu rama `develop` local:
+1. **Sincroniza tu rama develop local** (nunca trabajar directamente en develop):
 
    ```bash
    git checkout develop
    git pull origin develop
    ```
 
-2. Crea una rama de característica:
+2. **Crea una rama de característica DESDE develop**:
 
    ```bash
    git checkout -b feature/nueva-caracteristica
+   # Esta rama se crea desde develop, no desde main
    ```
 
 3. Desarrolla y haz commits locales:
@@ -93,7 +98,7 @@ develop (staging)
    git commit -m "feat: descripción del cambio"
    ```
 
-4. Ejecuta los checks locales antes de pushear:
+4. **Ejecuta los checks locales antes de pushear**:
 
    ```bash
    npm run lint
@@ -101,15 +106,17 @@ develop (staging)
    npm run build
    ```
 
-5. Pushea tu rama y crea un Pull Request:
+5. **Pushea tu rama y crea un Pull Request**:
 
    ```bash
    git push origin feature/nueva-caracteristica
    ```
 
-6. Solicita revisión y espera feedback.
+6. Al crear el PR en GitHub:
+   - **Target branch: SIEMPRE `develop`** (nunca main)
+   - Solicita revisión y espera feedback
 
-7. После aprobación, haz merge a `develop`.
+7. **Después de aprobación, haz merge a `develop`** (el target es siempre develop)
 
 ---
 
@@ -127,9 +134,9 @@ develop (staging)
 - ✅ Revisa el código dentro de 24-48 horas
 - ✅ Proporciona retroalimentación constructiva
 - ✅ Aprueba o solicita cambios claramente
-- ✅ No блокируй revisiones sin razón
+- ✅ No bloquees revisiones sin razón
 
-### Criteria de revisión:
+### Criterios de revisión:
 
 - Funcionalidad correcta
 - Code quality y maintainability
@@ -257,4 +264,4 @@ Somos un proyecto inclusivo y respetuoso. Ver [Contributor Covenant](https://www
 
 ---
 
-_Última actualización: 2026_
+_Last updated: 2026_

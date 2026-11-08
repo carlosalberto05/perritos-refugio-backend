@@ -20,7 +20,7 @@ git clone https://github.com/carlosalberto05/perritos-refugio-backend.git
 cd perritos-refugio-backend
 
 # Instalar dependencias
-npm ci
+npm ci --legacy-peer-deps
 
 # Copiar variables de entorno
 cp .env.example .env.local
